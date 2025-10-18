@@ -145,19 +145,19 @@ export default function Home() {
             <table className="timeline-table">
                 <tbody>
                     <tr>
-                        <td>Month 1 (Feb '26)</td>
+                        <td>Month 1 (Feb &apos;26)</td>
                         <td><strong>AI & Payments:</strong> Integrate Stripe for subscriptions. Set up pgvector and the data embedding pipeline.</td>
                     </tr>
                     <tr>
-                        <td>Month 2 (Mar '26)</td>
+                        <td>Month 2 (Mar &apos;26)</td>
                         <td><strong>Recommendation Engine:</strong> Build the core RAG logic and perform extensive prompt engineering for accuracy.</td>
                     </tr>
                     <tr>
-                        <td>Month 3 (Apr '26)</td>
+                        <td>Month 3 (Apr &apos;26)</td>
                         <td><strong>Frontend Polish & New Sources:</strong> Build the enhanced dashboard. Add scrapers for 3-5 more sources.</td>
                     </tr>
                     <tr>
-                        <td>Month 4 (May-Jun '26)</td>
+                        <td>Month 4 (May-Jun &apos;26)</td>
                         <td><strong>Testing & Launch:</strong> Conduct end-to-end testing, gather beta feedback, and execute the public launch.</td>
                     </tr>
                 </tbody>
