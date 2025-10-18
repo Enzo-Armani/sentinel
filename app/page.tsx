@@ -81,7 +81,7 @@ export default function Home() {
             </div>
             <div className="tech-item">
                 <strong>Backend: Python with FastAPI</strong>
-                <p>To leverage Python's unparalleled ecosystem for data scraping and AI.</p>
+                <p>To leverage Python&apos;s unparalleled ecosystem for data scraping and AI.</p>
             </div>
             <div className="tech-item">
                 <strong>Database: PostgreSQL with pgvector</strong>
