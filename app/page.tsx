@@ -110,7 +110,7 @@ export default function Home() {
             <div className="phase-goal">
                 <strong>Goal:</strong> Validate our core data aggregation and notification capabilities with a select group of beta testers.
             </div>
-            <p><strong>Timeline:</strong> Late October 2025 – Late January 2026</p>
+            <p><strong>Timeline:</strong> Early November 2025 – Early February 2026</p>
             <p><strong>Key Deliverables:</strong> A functional platform that monitors 1-3 regulatory sources and sends email alerts upon detecting changes.</p>
             
             <table className="timeline-table">
