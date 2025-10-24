@@ -6,7 +6,7 @@ export default function Home() {
       <div className="page">
         <div className="header">
             <div className="project-name">Sentinel</div>
-            <div className="subtitle">Automated Compliance SaaS for Australian Institutions</div>
+            <div className="subtitle">Automated Compliance SaaS for Australian Financial Institutions</div>
             <div className="date">October 18, 2025</div>
         </div>
         
@@ -15,7 +15,7 @@ export default function Home() {
                 The <span className="gradient-word">Vision</span>
             </h1>
             <p className="vision-description">
-                To build a market-leading micro-SaaS that automates regulatory compliance for Australian institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
+                To build a market-leading micro-SaaS that automates regulatory compliance for Australian Financial institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
             </p>
         </div>
         
