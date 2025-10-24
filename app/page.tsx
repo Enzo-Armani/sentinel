@@ -7,7 +7,7 @@ export default function Home() {
         <div className="header">
             <div className="project-name">Sentinel</div>
             <div className="subtitle">Automated Compliance SaaS for Australian Financial Institutions</div>
-            <div className="date">October 18, 2025</div>
+            <div className="date">October 24, 2025</div>
         </div>
         
         <div className="vision-hero">
