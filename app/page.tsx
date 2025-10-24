@@ -15,17 +15,17 @@ export default function Home() {
                 The <span className="gradient-word">Vision</span>
             </h1>
             <p className="vision-description">
-                To build a market-leading micro-SaaS that automates regulatory compliance for Australian Financial institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
+                To build a market-leading micro-SaaS that automates legal and regulatory compliance for Australian Financial institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
             </p>
         </div>
         
         <h1>1. The Opportunity</h1>
-        <p>Australian institutions face a significant challenge: navigating a vast and constantly changing landscape of compliance requirements. The current approach is predominantly manual, making it:</p>
+        <p>Australian institutions face a significant challenge: navigating a vast and constantly changing financial landscape of compliance requirements. The current approach is predominantly manual, making it:</p>
         
         <div className="challenge-list">
             <div className="challenge-item">
                 <strong>Overwhelming</strong>
-                <p>Keeping track of changes from numerous regulatory bodies is a full-time job.</p>
+                <p>Keeping track of changes from numerous legal and regulatory bodies is a full-time job.</p>
             </div>
             <div className="challenge-item">
                 <strong>Expensive</strong>
@@ -33,11 +33,11 @@ export default function Home() {
             </div>
             <div className="challenge-item">
                 <strong>Time-Consuming</strong>
-                <p>Manually analyzing new rules and implementing changes is slow and inefficient.</p>
+                <p>Manually analyzing new rules and implementing the application of changes is slow and inefficient.</p>
             </div>
             <div className="challenge-item">
                 <strong>Risky</strong>
-                <p>The potential for human error can lead to costly fines and reputational damage.</p>
+                <p>The potential for human error can lead to severe implications.</p>
             </div>
         </div>
         
@@ -64,8 +64,8 @@ export default function Home() {
                 </tr>
                 <tr>
                     <td className="tier-name">Features</td>
-                    <td dangerouslySetInnerHTML={{ __html: `• Limited watchlists<br>• Weekly email digests<br>• Document previews with citations<br>• No workflow connectors` }}></td>
-                    <td dangerouslySetInnerHTML={{ __html: `• Unlimited source monitoring<br>• Real-time alerts<br>• Control mappings<br>• AI-generated redline drafts<br>• Evidence & task management<br>• Integrations (Slack, Teams, Jira)` }}></td>
+                    <td dangerouslySetInnerHTML={{ __html: `• Limited watchlists<br>• Weekly email digests<br>• No workflow connectors` }}></td>
+                    <td dangerouslySetInnerHTML={{ __html: `• Unlimited source monitoring<br>• Real-time alerts<br>• Document previews with citations<br>• AI-generated redline drafts<br>• Task management<br>• Integrations (Slack, Teams, Jira)` }}></td>
                     <td dangerouslySetInnerHTML={{ __html: `• Automated change implementation<br>• Policy PRs (e.g., to GitHub)<br>• OPA bundle updates<br>• Cloud baseline enforcement<br>• Approval gates & audit trails` }}></td>
                 </tr>
             </tbody>
