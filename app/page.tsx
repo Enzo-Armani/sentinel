@@ -7,7 +7,7 @@ export default function Home() {
         <div className="header">
             <div className="project-name">Sentinel</div>
             <div className="subtitle">Automated Compliance SaaS for Australian Financial Institutions</div>
-            <div className="date">October 24, 2025</div>
+            <div className="date">November 2, 2025</div>
         </div>
         
         <div className="vision-hero">
@@ -151,7 +151,7 @@ export default function Home() {
                 </tr>
                 <tr>
                     <td className="tier-name">Value Proposition</td>
-                    <td>Stay informed about what's changing</td>
+                    <td>Stay informed about what is changing</td>
                     <td>Manage and act on regulatory impact using Microsoft-native tools</td>
                     <td>Achieve continuous, automated compliance — reducing reporting effort and accelerating change implementation</td>
                 </tr>
