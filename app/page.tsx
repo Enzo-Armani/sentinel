@@ -7,7 +7,7 @@ export default function Home() {
         <div className="header">
             <div className="project-name">Sentinel</div>
             <div className="subtitle">Automated Compliance SaaS for Australian Financial Institutions</div>
-            <div className="date">November 1, 2025</div>
+            <div className="date">October 24, 2025</div>
         </div>
         
         <div className="vision-hero">
@@ -15,12 +15,15 @@ export default function Home() {
                 The <span className="gradient-word">Vision</span>
             </h1>
             <p className="vision-description">
-                To build a market-leading micro-SaaS that automates legal and regulatory compliance for Australian Financial institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
+                To build a market-leading micro-SaaS that automates legal and regulatory compliance for Australian financial institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
+            </p>
+            <p className="vision-tagline">
+                Sentinel transforms compliance from reactive and manual to intelligent and predictive — powered by AI and integrated with the Microsoft 365 ecosystem.
             </p>
         </div>
         
         <h1>1. The Opportunity</h1>
-        <p>Australian institutions face a significant challenge: navigating a vast and constantly changing financial landscape of compliance requirements. The current approach is predominantly manual, making it:</p>
+        <p>Australian institutions face a significant challenge: navigating a vast and constantly changing landscape of financial compliance requirements. The current approach is predominantly manual, making it:</p>
         
         <div className="challenge-list">
             <div className="challenge-item">
@@ -29,7 +32,7 @@ export default function Home() {
             </div>
             <div className="challenge-item">
                 <strong>Expensive</strong>
-                <p>Requires significant investment in specialized staff and legal consultants.</p>
+                <p>Requires significant investment in specialized staff, legal consultants, and technology.</p>
             </div>
             <div className="challenge-item">
                 <strong>Time-Consuming</strong>
@@ -41,7 +44,7 @@ export default function Home() {
             </div>
         </div>
         
-        <p><strong>Sentinel will address this by providing an intelligent, automated platform to manage the entire compliance lifecycle.</strong></p>
+        <p><strong>Sentinel addresses this by providing an intelligent, automated platform to manage the entire compliance lifecycle.</strong></p>
         
         <h1>2. Our Solution & Business Model</h1>
         <p>We will offer a tiered service model that aligns with the increasing compliance maturity of our clients, from basic awareness to full automation.</p>
@@ -50,9 +53,9 @@ export default function Home() {
             <thead>
                 <tr>
                     <th>Feature / Goal</th>
-                    <th>Tier 1 — Signal (Free)</th>
-                    <th>Tier 2 — Insight (Subscription)</th>
-                    <th>Tier 3 — Autonomy (Subscription+)</th>
+                    <th>Tier 1 — <strong>Signal</strong> (Free)</th>
+                    <th>Tier 2 — <strong>Insight</strong> (Subscription)</th>
+                    <th>Tier 3 — <strong>Autonomy</strong> (Subscription+)</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,8 +67,8 @@ export default function Home() {
                 </tr>
                 <tr>
                     <td className="tier-name">Ideal Users</td>
-                    <td>Small FIs, analysts, risk observers</td>
-                    <td>Compliance, legal, and risk teams</td>
+                    <td>Small financial institutions (FIs), analysts, risk observers</td>
+                    <td>Compliance, legal, and risk management teams</td>
                     <td>Large banks, insurers, super funds</td>
                 </tr>
                 <tr>
@@ -77,8 +80,8 @@ export default function Home() {
                 <tr>
                     <td className="tier-name">Delivery</td>
                     <td>Monthly Outlook digest (Top 3 key updates)</td>
-                    <td>Real-time alerts via Teams & Outlook</td>
-                    <td>Automated workflows and enforcement via Power Automate</td>
+                    <td>Real-time alerts via Microsoft Teams & Outlook</td>
+                    <td>Automated workflows and rule enforcement via Microsoft Power Automate</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Watchlists</td>
@@ -131,8 +134,8 @@ export default function Home() {
                 <tr>
                     <td className="tier-name">Integrations</td>
                     <td><span className="feature-unavailable">✗</span></td>
-                    <td><span className="highlight-yellow">Microsoft 365 (Outlook, Teams, SharePoint, Power BI)</span></td>
-                    <td><span className="highlight-yellow">Full Microsoft ecosystem + API to ServiceNow, Archer, MetricStream</span></td>
+                    <td><span className="highlight-yellow">Microsoft 365 ecosystem (Outlook, Teams, SharePoint, Power BI)</span></td>
+                    <td><span className="highlight-yellow">Full Microsoft 365 ecosystem + API to ServiceNow, Archer, MetricStream</span></td>
                 </tr>
                 <tr>
                     <td className="tier-name">Data Governance & Security</td>
@@ -148,14 +151,14 @@ export default function Home() {
                 </tr>
                 <tr>
                     <td className="tier-name">Value Proposition</td>
-                    <td>Stay informed about what is changing</td>
+                    <td>Stay informed about what's changing</td>
                     <td>Manage and act on regulatory impact using Microsoft-native tools</td>
                     <td>Achieve continuous, automated compliance — reducing reporting effort and accelerating change implementation</td>
                 </tr>
             </tbody>
         </table>
         
-        <h1>3. Proposed Technology Stack ⚙️</h1>
+        <h1>3. Proposed Technology Stack</h1>
         <p>Our technology choices prioritize rapid development, scalability, and leveraging best-in-class tools for AI and data processing.</p>
         
         <div className="tech-stack">
@@ -165,7 +168,7 @@ export default function Home() {
             </div>
             <div className="tech-item">
                 <strong>Backend: Python with FastAPI</strong>
-                <p>To leverage Python&apos;s unparalleled ecosystem for data scraping and AI.</p>
+                <p>To leverage Python&apos;s unparalleled ecosystem for data scraping and AI development.</p>
             </div>
             <div className="tech-item">
                 <strong>Database: PostgreSQL with pgvector</strong>
@@ -183,7 +186,7 @@ export default function Home() {
       </div>
 
       <div className="page">
-        <h1 style={{ marginTop: 0 }}>4. Phased Development Roadmap & Timeline 🗺️</h1>
+        <h1 style={{ marginTop: 0 }}>4. Phased Development Roadmap & Timeline</h1>
         <p>We will follow a three-phased approach to de-risk the project, gather user feedback early, and build momentum towards our full vision.</p>
         
         <div className="phase-section">
@@ -194,21 +197,21 @@ export default function Home() {
             <div className="phase-goal">
                 <strong>Goal:</strong> Validate our core data aggregation and notification capabilities with a select group of beta testers.
             </div>
-            <p><strong>Timeline:</strong> Early November 2025 — Early February 2026</p>
+            <p><strong>Timeline:</strong> November 2025 – February 2026</p>
             <p><strong>Key Deliverables:</strong> A functional platform that monitors 1-3 regulatory sources and sends email alerts upon detecting changes.</p>
             
             <table className="timeline-table">
                 <tbody>
                     <tr>
-                        <td>Weeks 1-4</td>
+                        <td>Weeks 1–4</td>
                         <td><strong>Foundation & Backend Setup:</strong> Initialize project, design database schema, build basic user auth API.</td>
                     </tr>
                     <tr>
-                        <td>Weeks 5-8</td>
+                        <td>Weeks 5–8</td>
                         <td><strong>Core Scraping Engine:</strong> Build robust scrapers for initial sources, implement change detection logic.</td>
                     </tr>
                     <tr>
-                        <td>Weeks 9-12</td>
+                        <td>Weeks 9–12</td>
                         <td><strong>Frontend & Deployment:</strong> Build basic UI, integrate email service, deploy to the cloud for beta access.</td>
                     </tr>
                 </tbody>
@@ -223,7 +226,7 @@ export default function Home() {
             <div className="phase-goal">
                 <strong>Goal:</strong> Launch the paid subscription product by introducing the core AI-powered analysis and workflow integrations.
             </div>
-            <p><strong>Timeline:</strong> February 2026 — June 2026</p>
+            <p><strong>Timeline:</strong> February 2026 – June 2026</p>
             <p><strong>Key Deliverables:</strong> A commercial product that provides AI-generated recommendations, redline drafts, and integrates with key business tools like Slack and Jira.</p>
             
             <table className="timeline-table">
@@ -241,7 +244,7 @@ export default function Home() {
                         <td><strong>Frontend Polish & New Sources:</strong> Build the enhanced dashboard. Add scrapers for 3-5 more sources.</td>
                     </tr>
                     <tr>
-                        <td>Month 4 (May-Jun &apos;26)</td>
+                        <td>Month 4 (May–June &apos;26)</td>
                         <td><strong>Testing & Launch:</strong> Conduct end-to-end testing, gather beta feedback, and execute the public launch.</td>
                     </tr>
                 </tbody>
