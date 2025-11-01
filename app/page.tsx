@@ -7,7 +7,7 @@ export default function Home() {
         <div className="header">
             <div className="project-name">Sentinel</div>
             <div className="subtitle">Automated Compliance SaaS for Australian Financial Institutions</div>
-            <div className="date">October 24, 2025</div>
+            <div className="date">November 1, 2025</div>
         </div>
         
         <div className="vision-hero">
@@ -46,27 +46,111 @@ export default function Home() {
         <h1>2. Our Solution & Business Model</h1>
         <p>We will offer a tiered service model that aligns with the increasing compliance maturity of our clients, from basic awareness to full automation.</p>
         
-        <table>
+        <table className="enhanced-table">
             <thead>
                 <tr>
-                    <th>Tier</th>
-                    <th>Level 1 (Free)</th>
-                    <th>Level 2 (Subscription)</th>
-                    <th>Level 3 (Subscription+)</th>
+                    <th>Feature / Goal</th>
+                    <th>Tier 1 — Signal (Free)</th>
+                    <th>Tier 2 — Insight (Subscription)</th>
+                    <th>Tier 3 — Autonomy (Subscription+)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td className="tier-name">Goal</td>
+                    <td className="tier-name">Primary Goal</td>
                     <td>Awareness</td>
                     <td>Actionable Intelligence</td>
                     <td>Automated Implementation</td>
                 </tr>
                 <tr>
-                    <td className="tier-name">Features</td>
-                    <td dangerouslySetInnerHTML={{ __html: `• Limited watchlists<br>• Weekly email digests<br>• No workflow connectors` }}></td>
-                    <td dangerouslySetInnerHTML={{ __html: `• Unlimited source monitoring<br>• Real-time alerts<br>• Document previews with citations<br>• AI-generated redline drafts<br>• Task management<br>• Integrations (Slack, Teams, Jira)` }}></td>
-                    <td dangerouslySetInnerHTML={{ __html: `• Automated change implementation<br>• Policy PRs (e.g., to GitHub)<br>• OPA bundle updates<br>• Cloud baseline enforcement<br>• Approval gates & audit trails` }}></td>
+                    <td className="tier-name">Ideal Users</td>
+                    <td>Small FIs, analysts, risk observers</td>
+                    <td>Compliance, legal, and risk teams</td>
+                    <td>Large banks, insurers, super funds</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Regulatory Coverage</td>
+                    <td>Limited (select regulator or topic)</td>
+                    <td>Comprehensive coverage across the financial and legal landscape</td>
+                    <td>Comprehensive coverage with predictive insights</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Delivery</td>
+                    <td>Monthly Outlook digest (Top 3 key updates)</td>
+                    <td>Real-time alerts via Teams & Outlook</td>
+                    <td>Automated workflows and enforcement via Power Automate</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Watchlists</td>
+                    <td>1 fixed category (e.g., Prudential or Conduct)</td>
+                    <td>Unlimited configurable watchlists</td>
+                    <td>Unlimited + automated assignment by topic or entity</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">AI Summaries & Impact Classification</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> (relevance, urgency, business area)</td>
+                    <td><span className="feature-available">✓</span> + predictive trend analysis</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Change-to-Control Traceability</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> Automatically links regulatory updates to internal controls or obligations</td>
+                    <td><span className="feature-available">✓</span> Continuous mapping and impact tracking within automated workflows</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Regulatory Horizon Tracker</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> Monitor consultations & upcoming changes</td>
+                    <td><span className="feature-available">✓</span> Includes predictive focus areas and likely reforms</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Obligation Impact Snapshot</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> One-click impact report by business unit</td>
+                    <td><span className="feature-available">✓</span> Automated portfolio-level impact modeling</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Document Updates</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> AI-generated redlines for policies & procedures</td>
+                    <td><span className="feature-available">✓</span> Auto-routed redlines + tracked approvals</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Control Mapping</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> Map changes to internal control frameworks across financial, regulatory, and legal domains</td>
+                    <td><span className="feature-available">✓</span> Automated linkage and continuous updates across all frameworks</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Dashboards</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="feature-available">✓</span> Change trends & regulatory heatmaps</td>
+                    <td><span className="feature-available">✓</span> Regulatory readiness dashboards and compliance scorecards</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Integrations</td>
+                    <td><span className="feature-unavailable">✗</span></td>
+                    <td><span className="highlight-yellow">Microsoft 365 (Outlook, Teams, SharePoint, Power BI)</span></td>
+                    <td><span className="highlight-yellow">Full Microsoft ecosystem + API to ServiceNow, Archer, MetricStream</span></td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Data Governance & Security</td>
+                    <td>Standard encryption & access controls</td>
+                    <td>Role-based access + Microsoft Entra (Azure AD) integration</td>
+                    <td>Advanced DLP, retention, and Purview audit controls</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Data Sovereignty</td>
+                    <td>Hosted on Microsoft Azure (Australia)</td>
+                    <td>Hosted on Microsoft Azure (Australia)</td>
+                    <td>Hosted on Microsoft Azure (Australia)</td>
+                </tr>
+                <tr>
+                    <td className="tier-name">Value Proposition</td>
+                    <td>Stay informed about what's changing</td>
+                    <td>Manage and act on regulatory impact using Microsoft-native tools</td>
+                    <td>Achieve continuous, automated compliance — reducing reporting effort and accelerating change implementation</td>
                 </tr>
             </tbody>
         </table>
@@ -110,7 +194,7 @@ export default function Home() {
             <div className="phase-goal">
                 <strong>Goal:</strong> Validate our core data aggregation and notification capabilities with a select group of beta testers.
             </div>
-            <p><strong>Timeline:</strong> Early November 2025 – Early February 2026</p>
+            <p><strong>Timeline:</strong> Early November 2025 — Early February 2026</p>
             <p><strong>Key Deliverables:</strong> A functional platform that monitors 1-3 regulatory sources and sends email alerts upon detecting changes.</p>
             
             <table className="timeline-table">
@@ -139,7 +223,7 @@ export default function Home() {
             <div className="phase-goal">
                 <strong>Goal:</strong> Launch the paid subscription product by introducing the core AI-powered analysis and workflow integrations.
             </div>
-            <p><strong>Timeline:</strong> February 2026 – June 2026</p>
+            <p><strong>Timeline:</strong> February 2026 — June 2026</p>
             <p><strong>Key Deliverables:</strong> A commercial product that provides AI-generated recommendations, redline drafts, and integrates with key business tools like Slack and Jira.</p>
             
             <table className="timeline-table">

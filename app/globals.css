@@ -194,6 +194,84 @@ table {
     border: 1px solid #E5E5E5;
 }
 
+/* Enhanced table styles */
+.enhanced-table {
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+.enhanced-table thead {
+    background: linear-gradient(90deg, #7c3aed 0%, #db2777 30%, #f43f5e 50%, #f97316 70%, #fbbf24 100%);
+    color: white;
+}
+
+.enhanced-table th {
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+}
+
+.enhanced-table th:first-child {
+    width: 18%;
+}
+
+.enhanced-table th:nth-child(2),
+.enhanced-table th:nth-child(3),
+.enhanced-table th:nth-child(4) {
+    width: 27.33%;
+}
+
+.enhanced-table td {
+    padding: 12px;
+    border-bottom: 1px solid #F0F0F0;
+    background: white;
+    vertical-align: top;
+}
+
+.enhanced-table td:first-child {
+    font-weight: 600;
+    color: #000000;
+    background: #FAFAFA;
+}
+
+.enhanced-table tbody tr:hover {
+    background: #FAFAFA;
+}
+
+.enhanced-table tbody tr:hover td:first-child {
+    background: #F5F5F5;
+}
+
+.enhanced-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Feature availability indicators */
+.feature-available {
+    color: #10b981;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.feature-unavailable {
+    color: #ef4444;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Highlight styling */
+.highlight-yellow {
+    background: #fef3c7;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: inline-block;
+}
+
 thead {
     background: linear-gradient(90deg, #7c3aed 0%, #db2777 30%, #f43f5e 50%, #f97316 70%, #fbbf24 100%);
     color: white;
@@ -235,7 +313,7 @@ tbody tr:last-child td {
 }
 
 .feature-list li::before {
-    content: '●';
+    content: '◆';
     position: absolute;
     left: 0;
     background: linear-gradient(90deg, #7c3aed 0%, #db2777 30%, #f43f5e 50%, #f97316 70%, #fbbf24 100%);
@@ -416,6 +494,14 @@ li {
     }
     
     .vision-text {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .enhanced-table,
+    .highlight-yellow,
+    .feature-available,
+    .feature-unavailable {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
