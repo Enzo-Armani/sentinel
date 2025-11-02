@@ -309,7 +309,7 @@ export default function Home() {
         </div>
         
         <h1>Go-to-Market Strategy</h1>
-        <p>Our go-to-market strategy for Sentinel will leverage executive-level connections to secure internal sponsorships, complemented by targeted account-based selling that addresses each institution's unique compliance challenges. We will offer pilot programs to demonstrate clear value and ROI, supported by thought leadership content and active participation in industry events to build credibility. Engaging multiple stakeholders—including compliance officers, risk managers, and IT teams—will ensure broad internal alignment, while a strong customer success program will foster ongoing satisfaction and upsell opportunities.</p>
+        <p>Our go-to-market strategy for Sentinel will leverage executive-level connections to secure internal sponsorships, complemented by targeted account-based selling that addresses each institution&apos;s unique compliance challenges. We will offer pilot programs to demonstrate clear value and ROI, supported by thought leadership content and active participation in industry events to build credibility. Engaging multiple stakeholders—including compliance officers, risk managers, and IT teams—will ensure broad internal alignment, while a strong customer success program will foster ongoing satisfaction and upsell opportunities.</p>
         
         <h1>Team Snapshot</h1>
         <div className="team-list">
