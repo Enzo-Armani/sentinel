@@ -6,7 +6,7 @@ export default function Home() {
       <div className="page">
         <div className="header">
             <div className="project-name">Sentinel</div>
-            <div className="subtitle">Automated Compliance SaaS for Australian Financial Institutions</div>
+            <div className="subtitle">Automated Compliance SaaS for Australian Banking and Financial Institutions</div>
             <div className="date">November 2, 2025</div>
         </div>
         
@@ -15,39 +15,51 @@ export default function Home() {
                 The <span className="gradient-word">Vision</span>
             </h1>
             <p className="vision-description">
-                To build a market-leading micro-SaaS that automates legal and regulatory compliance for Australian financial institutions, transforming it from a costly manual burden into a streamlined, intelligent process.
+                To build a market-leading micro-SaaS that automates legal and regulatory compliance for Australian banking, superannuation, insurance, investment, and financial advice institutions — transforming compliance from a costly manual burden into a streamlined, intelligent process. Over time, this platform will evolve to serve other highly regulated sectors such as healthcare and engineering, extending the benefits of intelligent automation across industries.
             </p>
             <p className="vision-tagline">
-                Sentinel transforms compliance from reactive and manual to intelligent and predictive — powered by AI and integrated with the Microsoft 365 ecosystem.
+                Sentinel transforms compliance from reactive and manual to intelligent and predictive — powered by AI and integrated within the Microsoft 365 ecosystem.
             </p>
         </div>
         
-        <h1>1. The Opportunity</h1>
-        <p>Australian institutions face a significant challenge: navigating a vast and constantly changing landscape of financial compliance requirements. The current approach is predominantly manual, making it:</p>
+        <h1>Executive Summary</h1>
+        <p>Sentinel is an intelligent compliance automation platform built for Australian banking and financial institutions. It eliminates the inefficiencies of manual regulatory tracking by delivering AI-powered monitoring, analysis, and workflow automation — fully integrated within the Microsoft 365 ecosystem. Designed to evolve from financial services into other regulated sectors such as healthcare and engineering, Sentinel represents the next generation of scalable, sector-specific RegTech.</p>
+        
+        <h1>The Opportunity</h1>
+        <p>Australian banking and financial institutions face a significant challenge: navigating a vast and constantly evolving landscape of legal and regulatory compliance requirements. The current approach remains largely manual, making it:</p>
         
         <div className="challenge-list">
             <div className="challenge-item">
                 <strong>Overwhelming</strong>
-                <p>Keeping track of changes from numerous legal and regulatory bodies is a full-time job.</p>
+                <p>Keeping track of frequent changes issued by numerous legal and regulatory bodies is effectively a full-time job.</p>
             </div>
             <div className="challenge-item">
                 <strong>Expensive</strong>
-                <p>Requires significant investment in specialized staff, legal consultants, and technology.</p>
+                <p>Maintaining compliance requires significant investment in specialized staff, legal consultants, and supporting technology.</p>
             </div>
             <div className="challenge-item">
                 <strong>Time-Consuming</strong>
-                <p>Manually analyzing new rules and implementing the application of changes is slow and inefficient.</p>
+                <p>Manually analyzing new rules and implementing necessary changes is slow, inefficient, and difficult to scale.</p>
             </div>
             <div className="challenge-item">
                 <strong>Risky</strong>
-                <p>The potential for human error can lead to severe implications.</p>
+                <p>Human error in interpreting or applying regulations can lead to severe financial, operational, and reputational consequences.</p>
             </div>
         </div>
         
+        <p>With over 15,000 regulated entities across banking, superannuation, insurance, investment, and advice, the addressable market for compliance automation in Australia alone exceeds $500 million annually, with strong potential for global adaptation. Even small efficiency gains represent a multi-million-dollar opportunity, creating strong demand for scalable automation tools like Sentinel.</p>
+        
+        <p>Beyond Australia, similar regulatory complexity across the UK, EU, and APAC presents a $10 billion+ global RegTech opportunity, positioning Sentinel to scale internationally once validated locally.</p>
+        
         <p><strong>Sentinel addresses this by providing an intelligent, automated platform to manage the entire compliance lifecycle.</strong></p>
         
-        <h1>2. Our Solution & Business Model</h1>
-        <p>We will offer a tiered service model that aligns with the increasing compliance maturity of our clients, from basic awareness to full automation.</p>
+        <h1>Competitive Positioning</h1>
+        <p>While established solutions in the Australian market—such as LexisNexis, Ascent, and Compliance.ai—offer automated regulatory updates and horizon scanning, these platforms often serve large enterprises with complex systems that can be costly, slow to deploy, and less tailored to everyday user workflows. Many focus primarily on alerting rather than delivering instant, actionable updates seamlessly integrated into compliance workflows.</p>
+        
+        <p>Sentinel stands apart by being built by industry experts who deeply understand the real challenges faced by compliance teams, enabling us to design a solution that not only provides real-time regulatory updates but also automatically maps changes to obligations, assigns tasks, and tracks completion—all within a Microsoft-native platform that enhances ease of use and speed of deployment. This instant, end-to-end automation reduces risk by minimizing lag time between regulatory changes and organizational response, offering a cost-effective, user-friendly alternative that fills critical gaps left by existing providers.</p>
+        
+        <h1>Our Solution & Business Model</h1>
+        <p>We offer a tiered service model that aligns with the increasing compliance maturity of our customers, from basic awareness to full automation.</p>
         
         <table className="enhanced-table">
             <thead>
@@ -67,21 +79,21 @@ export default function Home() {
                 </tr>
                 <tr>
                     <td className="tier-name">Ideal Users</td>
-                    <td>Small financial institutions (FIs), analysts, risk observers</td>
+                    <td>Small financial institutions, analysts, risk observers</td>
                     <td>Compliance, legal, and risk management teams</td>
                     <td>Large banks, insurers, super funds</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Regulatory Coverage</td>
                     <td>Limited (select regulator or topic)</td>
-                    <td>Comprehensive coverage across the financial and legal landscape</td>
-                    <td>Comprehensive coverage with predictive insights</td>
+                    <td>Comprehensive coverage across financial and legal landscape</td>
+                    <td>Comprehensive with predictive insights</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Delivery</td>
-                    <td>Monthly Outlook digest (Top 3 key updates)</td>
+                    <td>Monthly Outlook digest (Top 3 updates)</td>
                     <td>Real-time alerts via Microsoft Teams & Outlook</td>
-                    <td>Automated workflows and rule enforcement via Microsoft Power Automate</td>
+                    <td>Automated workflows & rule enforcement via Power Automate</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Watchlists</td>
@@ -98,13 +110,13 @@ export default function Home() {
                 <tr>
                     <td className="tier-name">Change-to-Control Traceability</td>
                     <td><span className="feature-unavailable">✗</span></td>
-                    <td><span className="feature-available">✓</span> Automatically links regulatory updates to internal controls or obligations</td>
-                    <td><span className="feature-available">✓</span> Continuous mapping and impact tracking within automated workflows</td>
+                    <td><span className="feature-available">✓</span> Automatically links updates to internal controls</td>
+                    <td><span className="feature-available">✓</span> Continuous mapping and impact tracking</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Regulatory Horizon Tracker</td>
                     <td><span className="feature-unavailable">✗</span></td>
-                    <td><span className="feature-available">✓</span> Monitor consultations & upcoming changes</td>
+                    <td><span className="feature-available">✓</span> Monitors consultations & upcoming changes</td>
                     <td><span className="feature-available">✓</span> Includes predictive focus areas and likely reforms</td>
                 </tr>
                 <tr>
@@ -122,26 +134,26 @@ export default function Home() {
                 <tr>
                     <td className="tier-name">Control Mapping</td>
                     <td><span className="feature-unavailable">✗</span></td>
-                    <td><span className="feature-available">✓</span> Map changes to internal control frameworks across financial, regulatory, and legal domains</td>
-                    <td><span className="feature-available">✓</span> Automated linkage and continuous updates across all frameworks</td>
+                    <td><span className="feature-available">✓</span> Maps changes across financial, regulatory, legal domains</td>
+                    <td><span className="feature-available">✓</span> Automated linkage and continuous updates</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Dashboards</td>
                     <td><span className="feature-unavailable">✗</span></td>
                     <td><span className="feature-available">✓</span> Change trends & regulatory heatmaps</td>
-                    <td><span className="feature-available">✓</span> Regulatory readiness dashboards and compliance scorecards</td>
+                    <td><span className="feature-available">✓</span> Regulatory readiness dashboards & compliance scorecards</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Integrations</td>
                     <td><span className="feature-unavailable">✗</span></td>
                     <td><span className="highlight-yellow">Microsoft 365 ecosystem (Outlook, Teams, SharePoint, Power BI)</span></td>
-                    <td><span className="highlight-yellow">Full Microsoft 365 ecosystem + API to ServiceNow, Archer, MetricStream</span></td>
+                    <td><span className="highlight-yellow">Full Microsoft 365 + API to ServiceNow, Archer, MetricStream</span></td>
                 </tr>
                 <tr>
                     <td className="tier-name">Data Governance & Security</td>
                     <td>Standard encryption & access controls</td>
                     <td>Role-based access + Microsoft Entra (Azure AD) integration</td>
-                    <td>Advanced DLP, retention, and Purview audit controls</td>
+                    <td>Advanced DLP, retention, Purview audit controls</td>
                 </tr>
                 <tr>
                     <td className="tier-name">Data Sovereignty</td>
@@ -158,7 +170,7 @@ export default function Home() {
             </tbody>
         </table>
         
-        <h1>3. Proposed Technology Stack</h1>
+        <h1>Proposed Technology Stack</h1>
         <p>Our technology choices prioritize rapid development, scalability, and leveraging best-in-class tools for AI and data processing.</p>
         
         <div className="tech-stack">
@@ -179,15 +191,15 @@ export default function Home() {
                 <p>For reliably handling intensive background tasks like scraping and AI analysis.</p>
             </div>
             <div className="tech-item">
-                <strong>Deployment: Docker on AWS/Google Cloud</strong>
+                <strong>Deployment: Docker on AWS/Google Cloud/Microsoft Azure</strong>
                 <p>For scalable, consistent, and repeatable deployments.</p>
             </div>
         </div>
       </div>
 
       <div className="page">
-        <h1 style={{ marginTop: 0 }}>4. Phased Development Roadmap & Timeline</h1>
-        <p>We will follow a three-phased approach to de-risk the project, gather user feedback early, and build momentum towards our full vision.</p>
+        <h1 style={{ marginTop: 0 }}>Phased Development Roadmap & Timeline</h1>
+        <p>We will follow a three-phased approach to de-risk the project, gather user feedback early, and build momentum towards our full vision. Our roadmap progresses from data aggregation and notification (MVP), to AI-powered insight, and ultimately to full automation and enterprise integration.</p>
         
         <div className="phase-section">
             <div className="phase-header">
@@ -257,7 +269,7 @@ export default function Home() {
                 <div className="phase-timeline">6+ Months</div>
             </div>
             <div className="phase-goal">
-                <strong>Goal:</strong> Move upmarket to larger enterprise clients with full automation, a public API, and deep workflow integration.
+                <strong>Goal:</strong> Move upmarket to larger enterprise customers with full automation, a public API, and deep workflow integration.
             </div>
             <p><strong>Timeline:</strong> Starting July 2026</p>
             <p><strong>Key Deliverables:</strong> An enterprise-ready platform capable of automated policy updates, with robust audit trails and advanced analytics.</p>
@@ -278,6 +290,37 @@ export default function Home() {
                     </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <h1>Success Metrics</h1>
+        <div className="metrics-list">
+            <div className="metric-item">
+                <strong>50 beta users</strong>
+                <p>Onboarded by early 2026</p>
+            </div>
+            <div className="metric-item">
+                <strong>≥ 80% user satisfaction</strong>
+                <p>From pilot cohort</p>
+            </div>
+            <div className="metric-item">
+                <strong>10–15% conversion rate</strong>
+                <p>From free to paid tier by mid-2026</p>
+            </div>
+        </div>
+        
+        <h1>Go-to-Market Strategy</h1>
+        <p>Our go-to-market strategy for Sentinel will leverage executive-level connections to secure internal sponsorships, complemented by targeted account-based selling that addresses each institution's unique compliance challenges. We will offer pilot programs to demonstrate clear value and ROI, supported by thought leadership content and active participation in industry events to build credibility. Engaging multiple stakeholders—including compliance officers, risk managers, and IT teams—will ensure broad internal alignment, while a strong customer success program will foster ongoing satisfaction and upsell opportunities.</p>
+        
+        <h1>Team Snapshot</h1>
+        <div className="team-list">
+            <div className="team-item">
+                <strong>Founder / Product Lead</strong>
+                <p>Legal and compliance background with experience in financial services legal and regulatory.</p>
+            </div>
+            <div className="team-item">
+                <strong>Technical Lead</strong>
+                <p>Full-stack developer with AI and automation expertise.</p>
+            </div>
         </div>
       </div>
     </>
