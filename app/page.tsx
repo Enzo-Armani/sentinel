@@ -53,11 +53,6 @@ export default function Home() {
         
         <p><strong>Sentinel addresses this by providing an intelligent, automated platform to manage the entire compliance lifecycle.</strong></p>
         
-        <h1>Competitive Positioning</h1>
-        <p>While established solutions in the Australian market—such as LexisNexis, Ascent, and Compliance.ai—offer automated regulatory updates and horizon scanning, these platforms often serve large enterprises with complex systems that can be costly, slow to deploy, and less tailored to everyday user workflows. Many focus primarily on alerting rather than delivering instant, actionable updates seamlessly integrated into compliance workflows.</p>
-        
-        <p>Sentinel stands apart by being built by industry experts who deeply understand the real challenges faced by compliance teams, enabling us to design a solution that not only provides real-time regulatory updates but also automatically maps changes to obligations, assigns tasks, and tracks completion—all within a Microsoft-native platform that enhances ease of use and speed of deployment. This instant, end-to-end automation reduces risk by minimizing lag time between regulatory changes and organizational response, offering a cost-effective, user-friendly alternative that fills critical gaps left by existing providers.</p>
-        
         <h1>Our Solution & Business Model</h1>
         <p>We offer a tiered service model that aligns with the increasing compliance maturity of our customers, from basic awareness to full automation.</p>
         
@@ -307,6 +302,11 @@ export default function Home() {
                 <p>From free to paid tier by mid-2026</p>
             </div>
         </div>
+        
+        <h1>Competitive Positioning</h1>
+        <p>While established solutions in the Australian market—such as LexisNexis, Ascent, and Compliance.ai—offer automated regulatory updates and horizon scanning, these platforms often serve large enterprises with complex systems that can be costly, slow to deploy, and less tailored to everyday user workflows. Many focus primarily on alerting rather than delivering instant, actionable updates seamlessly integrated into compliance workflows.</p>
+        
+        <p>Sentinel stands apart by being built by industry experts who deeply understand the real challenges faced by compliance teams, enabling us to design a solution that not only provides real-time regulatory updates but also automatically maps changes to obligations, assigns tasks, and tracks completion—all within a Microsoft-native platform that enhances ease of use and speed of deployment. This instant, end-to-end automation reduces risk by minimizing lag time between regulatory changes and organizational response, offering a cost-effective, user-friendly alternative that fills critical gaps left by existing providers.</p>
         
         <h1>Go-to-Market Strategy</h1>
         <p>Our go-to-market strategy for Sentinel will leverage executive-level connections to secure internal sponsorships, complemented by targeted account-based selling that addresses each institution&apos;s unique compliance challenges. We will offer pilot programs to demonstrate clear value and ROI, supported by thought leadership content and active participation in industry events to build credibility. Engaging multiple stakeholders—including compliance officers, risk managers, and IT teams—will ensure broad internal alignment, while a strong customer success program will foster ongoing satisfaction and upsell opportunities.</p>
