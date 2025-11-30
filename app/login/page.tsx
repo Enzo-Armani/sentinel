@@ -1,8 +1,13 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import styles from '../page.module.css' // Reusing the same styles from the root
+import styles from '../page.module.css'
 
-export default function Login({ searchParams }: { searchParams: { message: string } }) {
+export default async function Login(props: {
+  searchParams: Promise<{ message: string }>
+}) {
+  const searchParams = await props.searchParams
+  const message = searchParams.message
+
   const signIn = async (formData: FormData) => {
     'use server'
     const email = formData.get('email') as string
@@ -11,35 +16,34 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        // Ensure this points to your live URL or localhost
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/auth/callback`, 
+        // Now securely uses your environment variable
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
       },
     })
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      console.error('Supabase Login Error:', error)
+      return redirect(`/login?message=${encodeURIComponent(error.message)}`)
     }
 
     return redirect('/login?message=Check your email for the magic link!')
   }
 
   // Get today's date for the header
-  const today = new Date().toLocaleDateString('en-AU', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  const today = new Date().toLocaleDateString('en-AU', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   })
 
   return (
     <div className={styles.page}>
-      {/* 1. Header Section (Identical to Dashboard & About) */}
       <div className="header">
         <div className="project-name">Sentinel</div>
         <div className="subtitle">Authentication Portal</div>
         <div className="date">{today}</div>
       </div>
 
-      {/* 2. Login Form Section */}
       <div className={styles.main} style={{ width: '100%', maxWidth: '400px', alignItems: 'stretch' }}>
         
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -51,7 +55,6 @@ export default function Login({ searchParams }: { searchParams: { message: strin
 
         <form action={signIn} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
-          {/* Styled Input */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label 
               htmlFor="email" 
@@ -75,13 +78,12 @@ export default function Login({ searchParams }: { searchParams: { message: strin
             />
           </div>
 
-          {/* Styled Button (Matches the "Primary" button style) */}
           <button 
             style={{
               backgroundColor: '#000',
               color: '#fff',
               padding: '14px',
-              borderRadius: '128px', // Matching the "pill" shape from your CSS
+              borderRadius: '128px',
               fontSize: '1rem',
               fontWeight: 500,
               border: 'none',
@@ -94,8 +96,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
             Send Magic Link
           </button>
 
-          {/* Feedback Message */}
-          {searchParams?.message && (
+          {message && (
             <div style={{
               marginTop: '16px',
               padding: '12px',
@@ -106,7 +107,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
               textAlign: 'center',
               color: '#333'
             }}>
-              {searchParams.message}
+              {decodeURIComponent(message)}
             </div>
           )}
         </form>
@@ -116,7 +117,6 @@ export default function Login({ searchParams }: { searchParams: { message: strin
                 &larr; Return to Project Vision
             </a>
         </div>
-
       </div>
     </div>
   )
