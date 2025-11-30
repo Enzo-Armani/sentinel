@@ -1,69 +1,75 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import styles from './login.module.css'
+import { SubmitButton } from './submit-button'
 
 export default async function Login(props: {
   searchParams: Promise<{ message: string }>
 }) {
-  // Await the searchParams (Required for Next.js 15)
   const searchParams = await props.searchParams
-  const message = searchParams.message
+  const rawMessage = searchParams.message
+
+  // Safety decode
+  let displayMessage = ""
+  if (rawMessage) {
+    try {
+      displayMessage = decodeURIComponent(rawMessage)
+    } catch (e) {
+      displayMessage = rawMessage
+    }
+  }
+
+  // Update success check to match new message
+  const isSuccess = displayMessage?.includes('Link Sent');
+  const isError = displayMessage && !isSuccess;
 
   const signIn = async (formData: FormData) => {
     'use server'
     
     const email = formData.get('email') as string
     const supabase = await createClient()
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || '').trim()
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        // Redirects user to your callback route
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
+        emailRedirectTo: `${baseUrl}/auth/callback`,
       },
     })
 
     if (error) {
       console.error('Supabase Login Error:', error)
-
-      // --- CRASH FIX ---
-      // We clean the error message to remove newlines (\n) or huge text
-      // which causes Next.js to crash with "ERR_INVALID_CHAR"
-      const cleanMessage = (error.message || "Authentication failed")
-        .replace(/[\n\r]+/g, ' ') // Replace newlines with space
+      const safeErrorMessage = (error.message || "Login failed")
+        .replace(/[^a-zA-Z0-9\s]/g, '') 
         .trim()
-        .substring(0, 200) // Cut off if too long
-
-      return redirect(`/login?message=${encodeURIComponent(cleanMessage)}`)
+        .substring(0, 100)
+      return redirect(`/login?message=${encodeURIComponent(safeErrorMessage)}`)
     }
 
-    return redirect('/login?message=✓ Magic Link Sent! Check your email.')
+    // Updated Confirmation Message
+    return redirect('/login?message=Link Sent. Check your email.')
   }
-
-  // Get today's date for the header
-  const today = new Date().toLocaleDateString('en-AU', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })
 
   return (
     <div className={styles.loginWrapper}>
-      {/* Decorative Circles */}
       <div className={`${styles.decorativeCircle} ${styles.circle1}`}></div>
       <div className={`${styles.decorativeCircle} ${styles.circle2}`}></div>
 
       <div className={styles.container}>
         <header className={styles.header}>
             <h1 className={styles.logo}>Sentinel</h1>
-            <p className={styles.subtitle}>Authentication Portal</p>
-            <p className={styles.date}>{today}</p>
         </header>
 
         <div className={styles.card}>
             <h2 className={styles.cardTitle}>Welcome Back</h2>
-            <p className={styles.cardDescription}>
-                Enter your email to access your compliance dashboard.
+            
+            {/* Dynamic Description Text */}
+            <p className={`
+              ${styles.cardDescription} 
+              ${isSuccess ? styles.textSuccess : ''}
+              ${isError ? styles.textError : ''}
+            `}>
+                {displayMessage || "Enter your email to access your compliance dashboard."}
             </p>
 
             <form action={signIn} className={styles.form}>
@@ -80,17 +86,16 @@ export default async function Login(props: {
                     />
                 </div>
 
-                <button type="submit" className={styles.btn}>Send Magic Link</button>
-
-                {/* Status Message Display */}
-                {message && (
-                    <div className={styles.messageBox}>
-                        {decodeURIComponent(message)}
-                    </div>
-                )}
+                <SubmitButton />
             </form>
 
-            <a href="/about" className={styles.footerLink}>Return to Project Vision</a>
+            <div style={{textAlign: 'center'}}>
+                <a href="/about" className={styles.footerLink}>Return to Project Vision</a>
+            </div>
+        </div>
+
+        <div className={styles.copyright}>
+            © Sentinel 2025
         </div>
       </div>
     </div>
