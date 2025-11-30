@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
+import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 
+const playfair = Playfair_Display({ 
+  subsets: ["latin"],
+  variable: '--font-display',
+});
+
+const dmSans = DM_Sans({ 
+  subsets: ["latin"],
+  variable: '--font-body',
+});
+
 export const metadata: Metadata = {
-  title: "Project Plan: Sentinel - Automated Compliance SaaS",
-  description: "Automated Compliance SaaS for Australian Institutions",
+  title: "Sentinel",
+  description: "Automated Compliance SaaS",
 };
 
 export default function RootLayout({
@@ -13,7 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={`${playfair.variable} ${dmSans.variable} antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }

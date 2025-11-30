@@ -1,121 +1,96 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import styles from '../page.module.css'
+import styles from './login.module.css'
 
 export default async function Login(props: {
   searchParams: Promise<{ message: string }>
 }) {
+  // Await the searchParams (Required for Next.js 15)
   const searchParams = await props.searchParams
   const message = searchParams.message
 
   const signIn = async (formData: FormData) => {
     'use server'
+    
     const email = formData.get('email') as string
     const supabase = await createClient()
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        // Now securely uses your environment variable
+        // Redirects user to your callback route
         emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
       },
     })
 
     if (error) {
       console.error('Supabase Login Error:', error)
-      return redirect(`/login?message=${encodeURIComponent(error.message)}`)
+
+      // --- CRASH FIX ---
+      // We clean the error message to remove newlines (\n) or huge text
+      // which causes Next.js to crash with "ERR_INVALID_CHAR"
+      const cleanMessage = (error.message || "Authentication failed")
+        .replace(/[\n\r]+/g, ' ') // Replace newlines with space
+        .trim()
+        .substring(0, 200) // Cut off if too long
+
+      return redirect(`/login?message=${encodeURIComponent(cleanMessage)}`)
     }
 
-    return redirect('/login?message=Check your email for the magic link!')
+    return redirect('/login?message=✓ Magic Link Sent! Check your email.')
   }
 
   // Get today's date for the header
-  const today = new Date().toLocaleDateString('en-AU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const today = new Date().toLocaleDateString('en-AU', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
   })
 
   return (
-    <div className={styles.page}>
-      <div className="header">
-        <div className="project-name">Sentinel</div>
-        <div className="subtitle">Authentication Portal</div>
-        <div className="date">{today}</div>
-      </div>
+    <div className={styles.loginWrapper}>
+      {/* Decorative Circles */}
+      <div className={`${styles.decorativeCircle} ${styles.circle1}`}></div>
+      <div className={`${styles.decorativeCircle} ${styles.circle2}`}></div>
 
-      <div className={styles.main} style={{ width: '100%', maxWidth: '400px', alignItems: 'stretch' }}>
-        
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Welcome Back</h1>
-          <p style={{ color: '#666', fontSize: '0.9rem' }}>
-            Enter your email to access your compliance dashboard.
-          </p>
-        </div>
+      <div className={styles.container}>
+        <header className={styles.header}>
+            <h1 className={styles.logo}>Sentinel</h1>
+            <p className={styles.subtitle}>Authentication Portal</p>
+            <p className={styles.date}>{today}</p>
+        </header>
 
-        <form action={signIn} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label 
-              htmlFor="email" 
-              style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-            >
-              Email Address
-            </label>
-            <input
-              id="email"
-              name="email"
-              placeholder="you@company.com"
-              required
-              style={{
-                padding: '12px 16px',
-                borderRadius: '6px',
-                border: '1px solid #e0e0e0',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
-              }}
-            />
-          </div>
+        <div className={styles.card}>
+            <h2 className={styles.cardTitle}>Welcome Back</h2>
+            <p className={styles.cardDescription}>
+                Enter your email to access your compliance dashboard.
+            </p>
 
-          <button 
-            style={{
-              backgroundColor: '#000',
-              color: '#fff',
-              padding: '14px',
-              borderRadius: '128px',
-              fontSize: '1rem',
-              fontWeight: 500,
-              border: 'none',
-              cursor: 'pointer',
-              marginTop: '8px',
-              transition: 'opacity 0.2s'
-            }}
-            className="hover:opacity-80"
-          >
-            Send Magic Link
-          </button>
+            <form action={signIn} className={styles.form}>
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel} htmlFor="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        name="email"
+                        className={styles.formInput} 
+                        placeholder="you@company.com"
+                        required
+                        autoComplete="email"
+                    />
+                </div>
 
-          {message && (
-            <div style={{
-              marginTop: '16px',
-              padding: '12px',
-              backgroundColor: '#f5f5f5',
-              border: '1px solid #eee',
-              borderRadius: '6px',
-              fontSize: '0.85rem',
-              textAlign: 'center',
-              color: '#333'
-            }}>
-              {decodeURIComponent(message)}
-            </div>
-          )}
-        </form>
+                <button type="submit" className={styles.btn}>Send Magic Link</button>
 
-        <div style={{ marginTop: '40px', textAlign: 'center' }}>
-            <a href="/about" style={{ color: '#999', textDecoration: 'none', fontSize: '0.85rem' }}>
-                &larr; Return to Project Vision
-            </a>
+                {/* Status Message Display */}
+                {message && (
+                    <div className={styles.messageBox}>
+                        {decodeURIComponent(message)}
+                    </div>
+                )}
+            </form>
+
+            <a href="/about" className={styles.footerLink}>Return to Project Vision</a>
         </div>
       </div>
     </div>

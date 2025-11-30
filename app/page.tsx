@@ -1,10 +1,11 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import styles from './page.module.css' // Importing your custom styles
+import styles from './page.module.css'
 
 export default async function Home() {
   const supabase = await createClient()
 
+  // 1. Get the real user
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -13,7 +14,7 @@ export default async function Home() {
     return redirect('/login')
   }
 
-  // Get today's date for the "Live" feel
+  // 2. Get today's date
   const today = new Date().toLocaleDateString('en-AU', { 
     year: 'numeric', 
     month: 'long', 
@@ -21,65 +22,83 @@ export default async function Home() {
   })
 
   return (
-    <div className={styles.page}>
-      {/* 1. Header Section (Matches your About page style) */}
-      <div className="header">
-        <div className="project-name">Sentinel</div>
-        <div className="subtitle">
-          Live Compliance Dashboard <span style={{ opacity: 0.5 }}>|</span> {user.email}
-        </div>
-        <div className="date">{today}</div>
-      </div>
-
-      {/* 2. Main Dashboard Content */}
-      <div style={{ width: '100%', maxWidth: '800px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <h1 style={{ margin: 0, fontSize: '2rem' }}>Regulatory Updates</h1>
+    <div className={styles.dashboardWrapper}>
+      <div className={styles.container}>
+        
+        {/* Header Section */}
+        <header className={styles.header}>
+            <div className={styles.headerContent}>
+                <h1 className={styles.logo}>Sentinel</h1>
+                <div className={styles.subtitle}>
+                    <span className={styles.badge}>
+                        <span className={styles.statusDot}></span>
+                        Live Compliance Dashboard
+                    </span>
+                    <span style={{opacity: 0.3}}>|</span>
+                    <span>{user.email}</span>
+                </div>
+                <div className={styles.date}>{today}</div>
+            </div>
             
-            {/* Styled Logout Button */}
-            <form action="/auth/signout" method="post">
-              <button 
-                style={{
-                  fontSize: '0.9rem',
-                  color: '#666',
-                  background: 'none',
-                  border: '1px solid #eee',
-                  padding: '8px 16px',
-                  borderRadius: '20px',
-                  cursor: 'pointer'
-                }}
-                className="hover:bg-gray-50"
-              >
-                Sign Out
-              </button>
-            </form>
-        </div>
+            <div className={styles.headerActions}>
+                {/* Settings Button (Placeholder for now) */}
+                <button className={`${styles.btn} ${styles.btnSecondary}`}>
+                  Settings
+                </button>
+                
+                {/* Real Sign Out Button */}
+                <form action="/auth/signout" method="post">
+                  <button className={`${styles.btn} ${styles.btnPrimary}`}>
+                    Sign Out
+                  </button>
+                </form>
+            </div>
+        </header>
 
-        {/* The "Empty State" Box */}
-        <div style={{ 
-            padding: '60px', 
-            border: '1px dashed #ccc', 
-            borderRadius: '8px', 
-            textAlign: 'center',
-            backgroundColor: '#fafafa'
-        }}>
-            <p style={{ fontSize: '1.2rem', fontWeight: 500, marginBottom: '10px' }}>
-                All clear.
-            </p>
-            <p style={{ color: '#666' }}>
-                No new regulatory changes detected for your sector today.
-            </p>
-            <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '20px' }}>
-                (Scraper Status: Pending Activation - Week 2)
-            </p>
-        </div>
+        <main>
+            <div className={styles.mainCard}>
+                <div className={styles.cardHeader}>
+                    <h2 className={styles.cardTitle}>Regulatory Updates</h2>
+                </div>
 
-        {/* Link back to Vision */}
-        <div style={{ marginTop: '60px', borderTop: '1px solid #eee', paddingTop: '20px', textAlign: 'center' }}>
-            <a href="/about" style={{ color: '#999', textDecoration: 'none', fontSize: '0.9rem' }}>
-                Read the Project Vision & Roadmap &rarr;
-            </a>
-        </div>
+                {/* Status Hero */}
+                <div className={styles.statusContainer}>
+                    <div className={styles.statusIcon}></div>
+                    <div className={styles.statusContent}>
+                        <h3 className={styles.statusTitle}>All clear.</h3>
+                        <p className={styles.statusDescription}>
+                          No new regulatory changes detected for your sector today.
+                        </p>
+                        <div className={styles.scraperStatus}>
+                            Scraper Status: Pending Activation - Week 2
+                        </div>
+                    </div>
+                </div>
+
+                {/* Info Grid - These will be real numbers soon */}
+                <div className={styles.infoGrid}>
+                    <div className={styles.infoCard}>
+                        <div className={styles.infoCardIcon}>📊</div>
+                        <div className={styles.infoCardTitle}>Active Monitors</div>
+                        <div className={styles.infoCardValue}>12 Sources</div>
+                    </div>
+                    <div className={styles.infoCard}>
+                        <div className={styles.infoCardIcon}>🔍</div>
+                        <div className={styles.infoCardTitle}>Last Scan</div>
+                        <div className={styles.infoCardValue}>2 hours ago</div>
+                    </div>
+                    <div className={styles.infoCard}>
+                        <div className={styles.infoCardIcon}>✓</div>
+                        <div className={styles.infoCardTitle}>Compliance Status</div>
+                        <div className={styles.infoCardValue}>Up to date</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer className={styles.footer}>
+            <a href="/about" className={styles.footerLink}>Read the Project Vision & Roadmap</a>
+        </footer>
       </div>
     </div>
   )
