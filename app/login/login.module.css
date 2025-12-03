@@ -73,12 +73,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Header */
+/* Header - UPDATED SPACING */
 .header {
   text-align: center;
-  /* Reduced from var(--spacing-2xl) [4rem] to 2.5rem */
+  /* Reduced bottom margin to pull card closer */
   margin-bottom: 2.5rem; 
-  /* Pulls the text up slightly to reduce top spacing */
+  /* Negative top margin to pull title up */
   margin-top: -1rem; 
 }
 
@@ -311,10 +311,12 @@
   font-weight: 500;
 }
 
+/* Secondary Button (For Onboarding) */
 .btnSecondary {
   background: transparent !important;
   border: 1px solid var(--color-border) !important;
   box-shadow: none !important;
+  color: var(--color-text) !important;
 }
 .btnSecondary:hover {
   background: var(--color-surface-elevated) !important;

@@ -50,9 +50,14 @@ app/
     signout/
       route.ts
   login/
+    actions.ts
+    login-form.tsx
     login.module.css
     page.tsx
     submit-button.tsx
+  onboarding/
+    actions.ts
+    page.tsx
   favicon.ico
   globals.css
   layout.tsx
@@ -606,23 +611,255 @@ export async function POST(req: NextRequest) {
 }
 </file>
 
-<file path="app/login/submit-button.tsx">
+<file path="app/login/actions.ts">
+'use server'
+
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server'
+
+export async function login(formData: FormData) {
+  const supabase = await createClient()
+
+  // Gather data
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+
+  // 1. Attempt Login
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (error) {
+    return redirect(`/login?message=${encodeURIComponent(error.message)}`)
+  }
+
+  // 2. Check if they need onboarding (Institution Type)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('institution_type')
+    .single()
+
+  // If no type is selected yet, force onboarding
+  if (!profile?.institution_type) {
+    return redirect('/onboarding')
+  }
+
+  revalidatePath('/', 'layout')
+  return redirect('/')
+}
+
+export async function signup(formData: FormData) {
+  const supabase = await createClient()
+
+  // Gather data
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const firstName = formData.get('firstName') as string
+  const lastName = formData.get('lastName') as string
+
+  // 1. Sign Up with Meta Data
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+      },
+    },
+  })
+
+  if (error) {
+    return redirect(`/login?message=${encodeURIComponent(error.message)}`)
+  }
+
+  // 2. Immediate Login (Since email confirm is off)
+  const { error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
+
+  if (loginError) {
+    return redirect('/login?message=Account created. Please log in.')
+  }
+
+  // 3. Send to Onboarding
+  return redirect('/onboarding')
+}
+</file>
+
+<file path="app/login/login-form.tsx">
 'use client'
 
-import { useFormStatus } from 'react-dom'
+import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import styles from './login.module.css'
+import { login, signup } from './actions'
+import { SubmitButton } from './submit-button'
 
-export function SubmitButton() {
-  const { pending } = useFormStatus()
+export default function LoginForm() {
+  const [isLogin, setIsLogin] = useState(true)
+  const searchParams = useSearchParams()
+  const message = searchParams.get('message')
+
+  // Wrapper to handle form submission based on toggle
+  const handleSubmit = async (formData: FormData) => {
+    if (isLogin) {
+      await login(formData)
+    } else {
+      await signup(formData)
+    }
+  }
 
   return (
-    <button 
-      type="submit" 
-      className={`${styles.btn} ${pending ? styles.loading : ''}`}
-      disabled={pending}
-    >
-      Send Link
-    </button>
+    <div className={styles.card}>
+        <h2 className={styles.cardTitle}>
+          {isLogin ? 'Welcome Back' : 'Create Account'}
+        </h2>
+        
+        <p className={styles.cardDescription}>
+            {isLogin 
+              ? 'Enter your credentials to access the dashboard.' 
+              : 'Join Sentinel to automate your compliance.'}
+        </p>
+
+        <form action={handleSubmit} className={styles.form}>
+            
+            {/* Name Fields (Only for Signup) */}
+            {!isLogin && (
+              <div style={{display: 'flex', gap: '1rem'}}>
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>First Name</label>
+                    <input name="firstName" className={styles.formInput} placeholder="Enzo" required />
+                </div>
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Last Name</label>
+                    <input name="lastName" className={styles.formInput} placeholder="Armani" required />
+                </div>
+              </div>
+            )}
+
+            <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Email Address</label>
+                <input name="email" type="email" className={styles.formInput} placeholder="you@company.com" required />
+            </div>
+
+            <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Password</label>
+                <input name="password" type="password" className={styles.formInput} placeholder="••••••••" required />
+            </div>
+
+            {/* Smart Button */}
+            <SubmitButton text={isLogin ? 'Log In' : 'Sign Up'} />
+
+            {/* Messages */}
+            {message && (
+                <div style={{
+                    marginTop: '1rem', 
+                    padding: '0.75rem', 
+                    background: 'rgba(255,255,255,0.05)', 
+                    borderRadius: '0.5rem',
+                    fontSize: '0.9rem',
+                    textAlign: 'center',
+                    color: message.includes('created') ? '#10b981' : '#ef4444'
+                }}>
+                    {decodeURIComponent(message)}
+                </div>
+            )}
+        </form>
+
+        <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
+            <button 
+              onClick={() => setIsLogin(!isLogin)}
+              type="button" 
+              style={{
+                background: 'none', 
+                border: 'none', 
+                color: 'var(--color-text-muted)', 
+                cursor: 'pointer', 
+                fontSize: '0.9rem',
+                textDecoration: 'underline',
+                transition: 'color 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
+              onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
+            >
+              {isLogin ? "New here? Create an account" : "Already have an account? Log In"}
+            </button>
+        </div>
+    </div>
+  )
+}
+</file>
+
+<file path="app/onboarding/actions.ts">
+'use server'
+
+import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
+
+export async function saveInstitutionType(formData: FormData) {
+  const type = formData.get('type') as string
+  const supabase = await createClient()
+  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return redirect('/login')
+
+  // FIX: Use UPSERT instead of UPDATE.
+  // This creates the row if it's missing, or updates it if it exists.
+  // This solves the "nothing happens" bug if the trigger failed earlier.
+  const { error } = await supabase
+    .from('profiles')
+    .upsert({ 
+      id: user.id, 
+      email: user.email,
+      institution_type: type 
+    }, { onConflict: 'id' })
+
+  if (error) {
+    console.error('Onboarding Error:', error)
+    // If error, stay here
+    return redirect('/onboarding?error=db_error')
+  }
+
+  return redirect('/')
+}
+</file>
+
+<file path="app/onboarding/page.tsx">
+import { saveInstitutionType } from './actions'
+import styles from '../login/login.module.css'
+import { SubmitButton } from '../login/submit-button' // Reuse the spinner button
+
+export default function Onboarding() {
+  return (
+    <div className={styles.loginWrapper}>
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>One last thing</h2>
+          <p className={styles.cardDescription}>
+            Select your institution type to configure your dashboard.
+          </p>
+          
+          {/* Form 1: ADI */}
+          <form action={saveInstitutionType} className={styles.form} style={{marginBottom: '1rem'}}>
+            <input type="hidden" name="type" value="ADI" />
+            <SubmitButton text="Authorised Deposit-Taking Institution (ADI)" />
+          </form>
+
+          {/* Form 2: AFS */}
+          <form action={saveInstitutionType} className={styles.form}>
+            <input type="hidden" name="type" value="AFS Licensee" />
+            <SubmitButton 
+              text="AFS Licensee" 
+              className={styles.btnSecondary} // We need to add this style or it will look purple
+            />
+          </form>
+        </div>
+      </div>
+    </div>
   )
 }
 </file>
@@ -895,315 +1132,24 @@ export async function GET(request: Request) {
 }
 </file>
 
-<file path="app/login/login.module.css">
-.loginWrapper {
-  --color-bg: #0a0e12;
-  --color-surface: #141920;
-  --color-surface-elevated: #1c232d;
-  --color-primary: #6366f1;
-  --color-accent: #8b5cf6;
-  --color-success: #10b981;
-  --color-error: #ef4444; /* Added Error Red */
-  --color-text: #f8fafc;
-  --color-text-muted: #94a3b8;
-  --color-border: #1e293b;
-  --color-glow: rgba(99, 102, 241, 0.15);
-  
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
-  --spacing-2xl: 4rem;
-  
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
+<file path="app/login/submit-button.tsx">
+'use client'
 
-  font-family: var(--font-body);
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
+import { useFormStatus } from 'react-dom'
+import styles from './login.module.css'
 
-/* Animated background gradient */
-.loginWrapper::before {
-  content: '';
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: 
-      radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
-  animation: float 20s ease-in-out infinite;
-  z-index: 0;
-  pointer-events: none;
-}
+export function SubmitButton({ text, className = '' }: { text: string, className?: string }) {
+  const { pending } = useFormStatus()
 
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  33% { transform: translate(30px, -30px) rotate(3deg); }
-  66% { transform: translate(-20px, 20px) rotate(-3deg); }
-}
-
-.container {
-  width: 100%;
-  max-width: 480px;
-  padding: var(--spacing-md);
-  position: relative;
-  z-index: 1;
-  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex; /* Added to help stack the footer */
-  flex-direction: column;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Header */
-.header {
-  text-align: center;
-  margin-bottom: var(--spacing-2xl);
-}
-
-.logo {
-  font-family: var(--font-display);
-  font-size: 3.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: var(--spacing-xs);
-  display: inline-block;
-}
-
-/* Card */
-.card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-2xl);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
-}
-
-.cardTitle {
-  font-family: var(--font-display);
-  font-size: 2.25rem;
-  font-weight: 600;
-  margin-bottom: var(--spacing-sm);
-  letter-spacing: -0.01em;
-  text-align: center;
-  color: var(--color-text);
-}
-
-.cardDescription {
-  color: var(--color-text-muted);
-  font-size: 1rem;
-  text-align: center;
-  margin-bottom: var(--spacing-xl);
-  min-height: 1.6em; /* Keeps layout stable if text changes */
-  transition: color 0.3s ease;
-}
-
-/* Status variants for the description text */
-.textSuccess {
-  color: var(--color-success) !important;
-  font-weight: 500;
-}
-.textError {
-  color: var(--color-error) !important;
-}
-
-/* Form */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.formLabel {
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-}
-
-.formInput {
-  width: 100%;
-  padding: 1rem 1.25rem;
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  outline: none;
-}
-.formInput::placeholder { color: var(--color-text-muted); opacity: 0.5; }
-.formInput:focus {
-  border-color: var(--color-primary);
-  background: var(--color-bg);
-  box-shadow: 0 0 0 3px var(--color-glow);
-}
-.formInput:hover:not(:focus) { border-color: rgba(99, 102, 241, 0.5); }
-
-/* Button */
-.btn {
-  width: 100%;
-  padding: 1.125rem 2rem;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
-  font-family: var(--font-body);
-  letter-spacing: 0.01em;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-  color: white;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-.btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-.btn:hover::before { left: 100%; }
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(99, 102, 241, 0.4);
-}
-.btn:active { transform: translateY(0); }
-
-/* Footer Link inside card */
-.footerLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  margin-top: var(--spacing-lg);
-}
-.footerLink:hover {
-  color: var(--color-primary);
-  background: var(--color-surface-elevated);
-}
-.footerLink::before {
-  content: '←';
-  transition: transform 0.3s ease;
-}
-.footerLink:hover::before { transform: translateX(-4px); }
-
-/* Decorative elements */
-.decorativeCircle {
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.circle1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
-  top: -200px;
-  right: -200px;
-  animation: pulse 8s ease-in-out infinite;
-}
-
-.circle2 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.04) 0%, transparent 70%);
-  bottom: -150px;
-  left: -150px;
-  animation: pulse 10s ease-in-out infinite 2s;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.1); }
-}
-
-/* Loading Animation */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading {
-  color: transparent !important;
-  pointer-events: none;
-}
-.loading::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  top: 50%;
-  left: 50%;
-  margin-left: -10px;
-  margin-top: -10px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 0.6s linear infinite;
-}
-
-/* Copyright (Outside Card) */
-.copyright {
-  text-align: center;
-  margin-top: 2rem;
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  opacity: 0.5;
-  font-weight: 500;
+  return (
+    <button 
+      type="submit" 
+      className={`${styles.btn} ${className} ${pending ? styles.loading : ''}`}
+      disabled={pending}
+    >
+      {text}
+    </button>
+  )
 }
 </file>
 
@@ -1642,6 +1588,331 @@ export default function RootLayout({
 }
 </file>
 
+<file path="app/login/login.module.css">
+.loginWrapper {
+  --color-bg: #0a0e12;
+  --color-surface: #141920;
+  --color-surface-elevated: #1c232d;
+  --color-primary: #6366f1;
+  --color-accent: #8b5cf6;
+  --color-success: #10b981;
+  --color-error: #ef4444; /* Added Error Red */
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-border: #1e293b;
+  --color-glow: rgba(99, 102, 241, 0.15);
+  
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Animated background gradient */
+.loginWrapper::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+      radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+  animation: float 20s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(30px, -30px) rotate(3deg); }
+  66% { transform: translate(-20px, 20px) rotate(-3deg); }
+}
+
+.container {
+  width: 100%;
+  max-width: 480px;
+  padding: var(--spacing-md);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; /* Added to help stack the footer */
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.header {
+  text-align: center;
+  /* Reduced from var(--spacing-2xl) [4rem] to 2.5rem */
+  margin-bottom: 2.5rem; 
+  /* Pulls the text up slightly to reduce top spacing */
+  margin-top: -1rem; 
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: var(--spacing-xs);
+  display: inline-block;
+}
+
+/* Card */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.cardDescription {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  min-height: 1.6em; /* Keeps layout stable if text changes */
+  transition: color 0.3s ease;
+}
+
+/* Status variants for the description text */
+.textSuccess {
+  color: var(--color-success) !important;
+  font-weight: 500;
+}
+.textError {
+  color: var(--color-error) !important;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.formInput {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+.formInput::placeholder { color: var(--color-text-muted); opacity: 0.5; }
+.formInput:focus {
+  border-color: var(--color-primary);
+  background: var(--color-bg);
+  box-shadow: 0 0 0 3px var(--color-glow);
+}
+.formInput:hover:not(:focus) { border-color: rgba(99, 102, 241, 0.5); }
+
+/* Button */
+.btn {
+  width: 100%;
+  padding: 1.125rem 2rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+.btn:hover::before { left: 100%; }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(99, 102, 241, 0.4);
+}
+.btn:active { transform: translateY(0); }
+
+/* Footer Link inside card */
+.footerLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  margin-top: var(--spacing-lg);
+}
+.footerLink:hover {
+  color: var(--color-primary);
+  background: var(--color-surface-elevated);
+}
+.footerLink::before {
+  content: '←';
+  transition: transform 0.3s ease;
+}
+.footerLink:hover::before { transform: translateX(-4px); }
+
+/* Decorative elements */
+.decorativeCircle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.circle1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  animation: pulse 8s ease-in-out infinite;
+}
+
+.circle2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.04) 0%, transparent 70%);
+  bottom: -150px;
+  left: -150px;
+  animation: pulse 10s ease-in-out infinite 2s;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* Loading Animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading {
+  color: transparent !important;
+  pointer-events: none;
+}
+.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+/* Copyright (Outside Card) */
+.copyright {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  opacity: 0.5;
+  font-weight: 500;
+}
+
+.btnSecondary {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: none !important;
+}
+.btnSecondary:hover {
+  background: var(--color-surface-elevated) !important;
+  border-color: var(--color-text-muted) !important;
+}
+</file>
+
 <file path="package.json">
 {
   "name": "sentinel",
@@ -1670,112 +1941,6 @@ export default function RootLayout({
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
-}
-</file>
-
-<file path="app/login/page.tsx">
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
-import styles from './login.module.css'
-import { SubmitButton } from './submit-button'
-
-export default async function Login(props: {
-  searchParams: Promise<{ message: string }>
-}) {
-  const searchParams = await props.searchParams
-  const rawMessage = searchParams.message
-
-  // Safety decode
-  let displayMessage = ""
-  if (rawMessage) {
-    try {
-      displayMessage = decodeURIComponent(rawMessage)
-    } catch (e) {
-      displayMessage = rawMessage
-    }
-  }
-
-  // Update success check to match new message
-  const isSuccess = displayMessage?.includes('Link Sent');
-  const isError = displayMessage && !isSuccess;
-
-  const signIn = async (formData: FormData) => {
-    'use server'
-    
-    const email = formData.get('email') as string
-    const supabase = await createClient()
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || '').trim()
-
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${baseUrl}/auth/callback`,
-      },
-    })
-
-    if (error) {
-      console.error('Supabase Login Error:', error)
-      const safeErrorMessage = (error.message || "Login failed")
-        .replace(/[^a-zA-Z0-9\s]/g, '') 
-        .trim()
-        .substring(0, 100)
-      return redirect(`/login?message=${encodeURIComponent(safeErrorMessage)}`)
-    }
-
-    // Updated Confirmation Message
-    return redirect('/login?message=Link Sent. Check your email.')
-  }
-
-  return (
-    <div className={styles.loginWrapper}>
-      <div className={`${styles.decorativeCircle} ${styles.circle1}`}></div>
-      <div className={`${styles.decorativeCircle} ${styles.circle2}`}></div>
-
-      <div className={styles.container}>
-        <header className={styles.header}>
-            <h1 className={styles.logo}>Sentinel</h1>
-        </header>
-
-        <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Welcome Back</h2>
-            
-            {/* Dynamic Description Text */}
-            <p className={`
-              ${styles.cardDescription} 
-              ${isSuccess ? styles.textSuccess : ''}
-              ${isError ? styles.textError : ''}
-            `}>
-                {displayMessage || "Enter your email to access your compliance dashboard."}
-            </p>
-
-            <form action={signIn} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="email">Email Address</label>
-                    <input 
-                        type="email" 
-                        id="email"
-                        name="email"
-                        className={styles.formInput} 
-                        placeholder="you@company.com"
-                        required
-                        autoComplete="email"
-                    />
-                </div>
-
-                <SubmitButton />
-            </form>
-
-            <div style={{textAlign: 'center'}}>
-                <a href="/about" className={styles.footerLink}>Return to Project Vision</a>
-            </div>
-        </div>
-
-        <div className={styles.copyright}>
-            © Sentinel 2025
-        </div>
-      </div>
-    </div>
-  )
 }
 </file>
 
@@ -2383,6 +2548,40 @@ li {
 }
 </file>
 
+<file path="app/login/page.tsx">
+import { Suspense } from 'react'
+import styles from './login.module.css'
+import LoginForm from './login-form'
+
+export default function LoginPage() {
+  const today = new Date().toLocaleDateString('en-AU', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  })
+
+  return (
+    <div className={styles.loginWrapper}>
+      <div className={`${styles.decorativeCircle} ${styles.circle1}`}></div>
+      <div className={`${styles.decorativeCircle} ${styles.circle2}`}></div>
+
+      <div className={styles.container}>
+        <header className={styles.header}>
+            <h1 className={styles.logo}>Sentinel</h1>
+        </header>
+
+        {/* Suspense Boundary fixes the build error */}
+        <Suspense fallback={<div className={styles.card}>Loading...</div>}>
+          <LoginForm />
+        </Suspense>
+
+        <div className={styles.copyright}>© Sentinel 2025</div>
+      </div>
+    </div>
+  )
+}
+</file>
+
 <file path="app/page.tsx">
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
@@ -2391,16 +2590,24 @@ import styles from './page.module.css'
 export default async function Home() {
   const supabase = await createClient()
 
-  // 1. Get the real user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // 1. Get User
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return redirect('/login')
 
-  if (!user) {
-    return redirect('/login')
+  // 2. Get Profile Data
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('first_name, institution_type')
+    .eq('id', user.id)
+    .single()
+
+  // 3. Force Onboarding if missing type
+  if (!profile?.institution_type) {
+    return redirect('/onboarding')
   }
 
-  // 2. Get today's date
+  // 4. Personalize
+  const greeting = profile?.first_name ? `Hey, ${profile.first_name}` : 'Welcome Back'
   const today = new Date().toLocaleDateString('en-AU', { 
     year: 'numeric', 
     month: 'long', 
@@ -2411,28 +2618,25 @@ export default async function Home() {
     <div className={styles.dashboardWrapper}>
       <div className={styles.container}>
         
-        {/* Header Section */}
+        {/* Header */}
         <header className={styles.header}>
             <div className={styles.headerContent}>
                 <h1 className={styles.logo}>Sentinel</h1>
                 <div className={styles.subtitle}>
                     <span className={styles.badge}>
                         <span className={styles.statusDot}></span>
-                        Live Compliance Dashboard
+                        {profile.institution_type} Dashboard
                     </span>
                     <span style={{opacity: 0.3}}>|</span>
-                    <span>{user.email}</span>
+                    <span>{greeting}</span>
                 </div>
                 <div className={styles.date}>{today}</div>
             </div>
             
             <div className={styles.headerActions}>
-                {/* Settings Button (Placeholder for now) */}
                 <button className={`${styles.btn} ${styles.btnSecondary}`}>
                   Settings
                 </button>
-                
-                {/* Real Sign Out Button */}
                 <form action="/auth/signout" method="post">
                   <button className={`${styles.btn} ${styles.btnPrimary}`}>
                     Sign Out
@@ -2447,7 +2651,6 @@ export default async function Home() {
                     <h2 className={styles.cardTitle}>Regulatory Updates</h2>
                 </div>
 
-                {/* Status Hero */}
                 <div className={styles.statusContainer}>
                     <div className={styles.statusIcon}></div>
                     <div className={styles.statusContent}>
@@ -2461,7 +2664,6 @@ export default async function Home() {
                     </div>
                 </div>
 
-                {/* Info Grid - These will be real numbers soon */}
                 <div className={styles.infoGrid}>
                     <div className={styles.infoCard}>
                         <div className={styles.infoCardIcon}>📊</div>

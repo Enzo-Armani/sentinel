@@ -1,8 +1,44 @@
+'use client'
+
+import { useState, useTransition } from 'react'
 import { saveInstitutionType } from './actions'
 import styles from '../login/login.module.css'
-import { SubmitButton } from '../login/submit-button' // Reuse the spinner button
 
 export default function Onboarding() {
+  const [isPending, startTransition] = useTransition()
+  // Default to 'ADI' being highlighted initially (optional, or set null for neither)
+  const [selected, setSelected] = useState<string | null>(null)
+
+  const handleSelect = (type: string) => {
+    setSelected(type)
+    
+    // Create FormData to match the existing server action signature
+    const formData = new FormData()
+    formData.append('type', type)
+
+    startTransition(async () => {
+      await saveInstitutionType(formData)
+    })
+  }
+
+  // Helper to determine button styles dynamically
+  const getButtonStyle = (type: string) => {
+    // If nothing selected yet, ADI is default primary, AFS is secondary
+    const isDefaultPrimary = selected === null && type === 'ADI'
+    
+    // If this specific button is selected
+    const isSelected = selected === type
+
+    // Use Primary style (Purple) if it's the selected one OR the default primary
+    // But if we have made a selection, the non-selected one must be secondary
+    if (isSelected || (selected === null && isDefaultPrimary)) {
+      return `${styles.btn} ${isSelected && isPending ? styles.loading : ''}`
+    }
+    
+    // Otherwise return Secondary (Dark)
+    return `${styles.btn} ${styles.btnSecondary}`
+  }
+
   return (
     <div className={styles.loginWrapper}>
       <div className={styles.container}>
@@ -12,20 +48,26 @@ export default function Onboarding() {
             Select your institution type to configure your dashboard.
           </p>
           
-          {/* Form 1: ADI */}
-          <form action={saveInstitutionType} className={styles.form} style={{marginBottom: '1rem'}}>
-            <input type="hidden" name="type" value="ADI" />
-            <SubmitButton text="Authorised Deposit-Taking Institution (ADI)" />
-          </form>
+          <div className={styles.form}>
+            {/* Option 1: ADI */}
+            <button 
+              onClick={() => handleSelect('ADI')}
+              disabled={isPending}
+              className={getButtonStyle('ADI')}
+              style={{marginBottom: '1rem'}}
+            >
+              Authorised Deposit-Taking Institution (ADI)
+            </button>
 
-          {/* Form 2: AFS */}
-          <form action={saveInstitutionType} className={styles.form}>
-            <input type="hidden" name="type" value="AFS Licensee" />
-            <SubmitButton 
-              text="AFS Licensee" 
-              className={styles.btnSecondary} // We need to add this style or it will look purple
-            />
-          </form>
+            {/* Option 2: AFS */}
+            <button 
+              onClick={() => handleSelect('AFS Licensee')}
+              disabled={isPending}
+              className={getButtonStyle('AFS Licensee')}
+            >
+              AFS Licensee
+            </button>
+          </div>
         </div>
       </div>
     </div>
