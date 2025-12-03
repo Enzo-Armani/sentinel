@@ -1,57 +1,28 @@
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import styles from './login.module.css'
+import { login, signup } from './actions'
 import { SubmitButton } from './submit-button'
 
-export default async function Login(props: {
-  searchParams: Promise<{ message: string }>
-}) {
-  const searchParams = await props.searchParams
-  const rawMessage = searchParams.message
+export default function AuthPage() {
+  const [isLogin, setIsLogin] = useState(true)
+  const searchParams = useSearchParams()
+  const message = searchParams.get('message')
 
-  // Safety decode
-  let displayMessage = ""
-  if (rawMessage) {
-    try {
-      displayMessage = decodeURIComponent(rawMessage)
-    } catch (e) {
-      displayMessage = rawMessage
+  // This wrapper determines which Server Action to call
+  const handleSubmit = async (formData: FormData) => {
+    if (isLogin) {
+      await login(formData)
+    } else {
+      await signup(formData)
     }
-  }
-
-  // Update success check to match new message
-  const isSuccess = displayMessage?.includes('Link Sent');
-  const isError = displayMessage && !isSuccess;
-
-  const signIn = async (formData: FormData) => {
-    'use server'
-    
-    const email = formData.get('email') as string
-    const supabase = await createClient()
-    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || '').trim()
-
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${baseUrl}/auth/callback`,
-      },
-    })
-
-    if (error) {
-      console.error('Supabase Login Error:', error)
-      const safeErrorMessage = (error.message || "Login failed")
-        .replace(/[^a-zA-Z0-9\s]/g, '') 
-        .trim()
-        .substring(0, 100)
-      return redirect(`/login?message=${encodeURIComponent(safeErrorMessage)}`)
-    }
-
-    // Updated Confirmation Message
-    return redirect('/login?message=Link Sent. Check your email.')
   }
 
   return (
     <div className={styles.loginWrapper}>
+      {/* Decorative Background Elements */}
       <div className={`${styles.decorativeCircle} ${styles.circle1}`}></div>
       <div className={`${styles.decorativeCircle} ${styles.circle2}`}></div>
 
@@ -61,42 +32,107 @@ export default async function Login(props: {
         </header>
 
         <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Welcome Back</h2>
+            <h2 className={styles.cardTitle}>
+              {isLogin ? 'Welcome Back' : 'Create Account'}
+            </h2>
             
-            {/* Dynamic Description Text */}
-            <p className={`
-              ${styles.cardDescription} 
-              ${isSuccess ? styles.textSuccess : ''}
-              ${isError ? styles.textError : ''}
-            `}>
-                {displayMessage || "Enter your email to access your compliance dashboard."}
+            <p className={styles.cardDescription}>
+                {isLogin 
+                  ? 'Enter your credentials to access the dashboard.' 
+                  : 'Join Sentinel to automate your compliance.'}
             </p>
 
-            <form action={signIn} className={styles.form}>
+            {/* The Form Action triggers the loading state in SubmitButton */}
+            <form action={handleSubmit} className={styles.form}>
+                
+                {/* Name Fields (Only visible for Signup) */}
+                {!isLogin && (
+                  <div style={{display: 'flex', gap: '1rem'}}>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>First Name</label>
+                        <input 
+                          name="firstName" 
+                          className={styles.formInput} 
+                          placeholder="Enzo" 
+                          required 
+                        />
+                    </div>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Last Name</label>
+                        <input 
+                          name="lastName" 
+                          className={styles.formInput} 
+                          placeholder="Armani" 
+                          required 
+                        />
+                    </div>
+                  </div>
+                )}
+
                 <div className={styles.formGroup}>
-                    <label className={styles.formLabel} htmlFor="email">Email Address</label>
+                    <label className={styles.formLabel}>Email Address</label>
                     <input 
-                        type="email" 
-                        id="email"
-                        name="email"
-                        className={styles.formInput} 
-                        placeholder="you@company.com"
-                        required
-                        autoComplete="email"
+                      name="email" 
+                      type="email" 
+                      className={styles.formInput} 
+                      placeholder="you@company.com" 
+                      required 
                     />
                 </div>
 
-                <SubmitButton />
+                <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Password</label>
+                    <input 
+                      name="password" 
+                      type="password" 
+                      className={styles.formInput} 
+                      placeholder="••••••••" 
+                      required 
+                    />
+                </div>
+
+                {/* The Smart Button with Loading Spinner */}
+                <SubmitButton text={isLogin ? 'Log In' : 'Sign Up'} />
+
+                {/* Error/Success Messages */}
+                {message && (
+                    <div style={{
+                        marginTop: '1rem', 
+                        padding: '0.75rem', 
+                        background: 'rgba(255,255,255,0.05)', 
+                        borderRadius: '0.5rem',
+                        fontSize: '0.9rem',
+                        textAlign: 'center',
+                        color: message.includes('created') ? '#10b981' : '#ef4444'
+                    }}>
+                        {decodeURIComponent(message)}
+                    </div>
+                )}
             </form>
 
-            <div style={{textAlign: 'center'}}>
-                <a href="/about" className={styles.footerLink}>Return to Project Vision</a>
+            {/* Toggle between Login and Signup */}
+            <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
+                <button 
+                  onClick={() => setIsLogin(!isLogin)}
+                  type="button" // Important so it doesn't submit the form
+                  style={{
+                    background: 'none', 
+                    border: 'none', 
+                    color: 'var(--color-text-muted)', 
+                    cursor: 'pointer', 
+                    fontSize: '0.9rem',
+                    textDecoration: 'underline',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
+                  onMouseOut={(e) => e.currentTarget.style.color = 'var(--color-text-muted)'}
+                >
+                  {isLogin ? "New here? Create an account" : "Already have an account? Log In"}
+                </button>
             </div>
         </div>
 
-        <div className={styles.copyright}>
-            © Sentinel 2025
-        </div>
+        <div className={styles.copyright}>© Sentinel 2025</div>
       </div>
     </div>
   )

@@ -5,16 +5,24 @@ import styles from './page.module.css'
 export default async function Home() {
   const supabase = await createClient()
 
-  // 1. Get the real user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // 1. Get User
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return redirect('/login')
 
-  if (!user) {
-    return redirect('/login')
+  // 2. Get Profile Data
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('first_name, institution_type')
+    .eq('id', user.id)
+    .single()
+
+  // 3. Force Onboarding if missing type
+  if (!profile?.institution_type) {
+    return redirect('/onboarding')
   }
 
-  // 2. Get today's date
+  // 4. Personalize
+  const greeting = profile?.first_name ? `Hey, ${profile.first_name}` : 'Welcome Back'
   const today = new Date().toLocaleDateString('en-AU', { 
     year: 'numeric', 
     month: 'long', 
@@ -25,28 +33,25 @@ export default async function Home() {
     <div className={styles.dashboardWrapper}>
       <div className={styles.container}>
         
-        {/* Header Section */}
+        {/* Header */}
         <header className={styles.header}>
             <div className={styles.headerContent}>
                 <h1 className={styles.logo}>Sentinel</h1>
                 <div className={styles.subtitle}>
                     <span className={styles.badge}>
                         <span className={styles.statusDot}></span>
-                        Live Compliance Dashboard
+                        {profile.institution_type} Dashboard
                     </span>
                     <span style={{opacity: 0.3}}>|</span>
-                    <span>{user.email}</span>
+                    <span>{greeting}</span>
                 </div>
                 <div className={styles.date}>{today}</div>
             </div>
             
             <div className={styles.headerActions}>
-                {/* Settings Button (Placeholder for now) */}
                 <button className={`${styles.btn} ${styles.btnSecondary}`}>
                   Settings
                 </button>
-                
-                {/* Real Sign Out Button */}
                 <form action="/auth/signout" method="post">
                   <button className={`${styles.btn} ${styles.btnPrimary}`}>
                     Sign Out
@@ -61,7 +66,6 @@ export default async function Home() {
                     <h2 className={styles.cardTitle}>Regulatory Updates</h2>
                 </div>
 
-                {/* Status Hero */}
                 <div className={styles.statusContainer}>
                     <div className={styles.statusIcon}></div>
                     <div className={styles.statusContent}>
@@ -75,7 +79,6 @@ export default async function Home() {
                     </div>
                 </div>
 
-                {/* Info Grid - These will be real numbers soon */}
                 <div className={styles.infoGrid}>
                     <div className={styles.infoCard}>
                         <div className={styles.infoCardIcon}>📊</div>
